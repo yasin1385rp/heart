@@ -2,109 +2,114 @@
 <html lang="fa" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💖 Love Heart Animation - Light Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💖 Love Heart - Real ECG Heartbeat 💖</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
+            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             background: radial-gradient(circle at center, #1a0b10 0%, #000000 100%);
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             position: relative;
         }
 
         #ui {
             position: relative;
-            width: 500px;
-            height: 500px;
+            width: min(90vw, 700px);
+            height: min(90vw, 700px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2;
+            will-change: transform;
         }
 
         .love_word {
             position: absolute;
-            color: #ea80b0;
             font-weight: bold;
             text-shadow: 0 0 25px rgba(255, 255, 255, 0.5), 0 0 50px rgba(234, 128, 176, 0.3);
             letter-spacing: 2px;
             white-space: nowrap;
             transform: translate(-50%, -50%);
             opacity: 0.95;
-            user-select: none;
-            will-change: transform, left, top, color, opacity;
+            pointer-events: none;
+            font-size: clamp(0.7rem, 4vw, 1.1rem);
+            z-index: 5;
+            will-change: left, top, color;
         }
 
         .heart-glow {
             position: absolute;
-            width: 350px;
-            height: 350px;
+            width: 70%;
+            height: 70%;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(234, 128, 176, 0.15) 0%, rgba(234, 128, 176, 0.05) 50%, transparent 70%);
-            filter: blur(40px);
+            background: radial-gradient(circle, rgba(234, 128, 176, 0.2) 0%, rgba(234, 128, 176, 0.08) 50%, transparent 70%);
+            filter: blur(50px);
             z-index: -1;
-            animation: pulseGlow 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.2); opacity: 1; }
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            pointer-events: none;
-            z-index: 0;
+            animation: pulseGlow 1.15s ease-in-out infinite alternate;
             will-change: transform;
         }
 
-        .falling-heart {
-            position: absolute;
-            font-size: 0.8rem;
-            opacity: 0.2;
-            animation: fallDown linear infinite;
-            pointer-events: none;
-            z-index: 0;
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(1.25); opacity: 0.9; }
         }
 
-        @keyframes fallDown {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.25; }
-            90% { opacity: 0.25; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        .ecg-wave-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 30%;
+            z-index: 15;
+            pointer-events: none;
         }
-        
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 15px rgba(234, 128, 176, 0.6));
+        }
+
         .title-text {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.12);
-            font-size: 0.9rem;
-            letter-spacing: 8px;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: clamp(0.6rem, 3vw, 0.8rem);
+            letter-spacing: 6px;
             text-transform: uppercase;
             z-index: 1;
             font-weight: 300;
+            white-space: nowrap;
         }
 
-        /* متن عاشقانه */
         .romantic-text {
             position: fixed;
-            top: 40px;
+            top: max(20px, 5vh);
             left: 50%;
             transform: translateX(-50%);
             color: rgba(234, 128, 176, 0.7);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
+            letter-spacing: 3px;
             text-shadow: 0 0 30px rgba(234, 128, 176, 0.2);
-            z-index: 3;
+            z-index: 20;
             font-weight: 300;
             font-family: 'Georgia', serif;
             animation: fadeText 8s ease-in-out infinite;
@@ -116,14 +121,15 @@
             20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0px); }
         }
 
-        /* نور بالای قلب */
         .spotlight {
             position: absolute;
             top: -150px;
             left: 50%;
             transform: translateX(-50%);
-            width: 400px;
-            height: 400px;
+            width: 70%;
+            max-width: 500px;
+            height: 70%;
+            max-height: 500px;
             background: radial-gradient(ellipse at center, rgba(234, 128, 176, 0.06) 0%, transparent 70%);
             filter: blur(20px);
             pointer-events: none;
@@ -136,58 +142,13 @@
             100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
         }
 
-        /* خط ضربان قلب */
-        .pulse-ring {
-            position: absolute;
-            width: 450px;
-            height: 450px;
-            border: 1px solid rgba(234, 128, 176, 0.12);
-            border-radius: 50%;
-            z-index: -1;
-            animation: pulseRing 2.5s ease-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes pulseRing {
-            0% { transform: scale(0.85); opacity: 0; }
-            30% { opacity: 0.4; }
-            100% { transform: scale(1.4); opacity: 0; }
-        }
-
-        .pulse-ring:nth-child(2) {
-            animation-delay: 1.25s;
-        }
-
-        /* گلبرگ */
-        .petal {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: radial-gradient(circle at 30% 30%, #ff69b4, #c71586);
-            border-radius: 50% 0 50% 50%;
-            opacity: 0.15;
-            animation: fallPetal linear infinite;
-            pointer-events: none;
-            z-index: 0;
-            transform: rotate(45deg);
-            will-change: transform;
-        }
-
-        @keyframes fallPetal {
-            0% { transform: translateX(0) translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.25; }
-            90% { opacity: 0.25; }
-            100% { transform: translateX(50px) translateY(110vh) rotate(720deg) scale(1.2); opacity: 0; }
-        }
-
-        /* دود */
         .mist {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, rgba(234, 128, 176, 0.04) 0%, transparent 100%);
+            height: 80px;
+            background: linear-gradient(to top, rgba(234, 128, 176, 0.03) 0%, transparent 100%);
             filter: blur(15px);
             z-index: 1;
             pointer-events: none;
@@ -195,26 +156,47 @@
         }
 
         @keyframes mistWave {
-            0% { opacity: 0.3; transform: translateY(0); }
-            100% { opacity: 0.6; transform: translateY(-5px); }
+            0% { opacity: 0.2; transform: translateY(0); }
+            100% { opacity: 0.5; transform: translateY(-5px); }
         }
 
-        /* اسپارکل */
-        .sparkle {
-            position: absolute;
-            color: #ff69b4;
-            font-size: 0.6rem;
+        .falling-particle, .falling-heart, .sparkle {
+            position: fixed;
             pointer-events: none;
+            will-change: transform;
             z-index: 1;
-            animation: sparkleAnim 3s ease-in-out infinite;
-            opacity: 0;
-            will-change: transform, opacity;
+        }
+        
+        .falling-particle {
+            border-radius: 50%;
+            top: -10px;
         }
 
-        @keyframes sparkleAnim {
-            0% { transform: scale(0) rotate(0deg); opacity: 0; }
-            50% { transform: scale(1) rotate(180deg); opacity: 0.7; }
-            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        .falling-heart {
+            top: -20px;
+        }
+
+        .sparkle {
+            top: -20px;
+            font-size: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .love_word { letter-spacing: 1px; }
+            .romantic-text { top: 15px; letter-spacing: 2px; }
+            .title-text { bottom: 15px; letter-spacing: 4px; }
+            .ecg-wave-container { width: 75%; height: 28%; }
+        }
+
+        @media (max-width: 480px) {
+            .love_word { letter-spacing: 0.5px; }
+            .romantic-text { font-size: 0.8rem; white-space: nowrap; padding: 0 10px; }
+            .title-text { font-size: 0.5rem; letter-spacing: 3px; }
+        }
+
+        @media (min-width: 1200px) {
+            #ui { width: 750px; height: 750px; }
+            .love_word { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -222,205 +204,406 @@
 
     <div class="romantic-text">✨ You are my everything ✨</div>
     <div class="spotlight"></div>
-    <div class="pulse-ring"></div>
-    <div class="pulse-ring"></div>
     <div class="mist"></div>
 
     <div id="ui">
         <div class="heart-glow"></div>
+        <div class="ecg-wave-container">
+            <canvas id="ecgCanvas" width="600" height="200" style="width:100%; height:100%"></canvas>
+        </div>
     </div>
     
     <div class="title-text">💕 For You 💕</div>
 
     <script>
-        // ------------------ کد اصلی قلب (بهینه شده) ------------------
-        const container = document.getElementById('ui');
-        const wordText = "I love you ";
-        const numWords = 80; // کاهش از 100 برای سرعت بیشتر (شکل قلب همچنان عالی است)
-        const scale = 200;
-
-        function getHeartPoint(t) {
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-            return { x: x, y: y };
-        }
-
-        const words = [];
-        const centerX = 250;
-        const centerY = 250;
-
-        for (let i = 0; i < numWords; i++) {
-            const wordDiv = document.createElement('div');
-            wordDiv.className = 'love_word';
+        (function() {
+            // بهینه‌سازی برای موبایل - کاهش نرخ فریم در موبایل
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const targetFPS = isMobile ? 30 : 60;
+            const frameInterval = 1000 / targetFPS;
+            let lastFrameTime = 0;
             
-            const randomSize = 1 + (Math.random() * 0.2);
-            wordDiv.style.fontSize = (1.2 * randomSize) + 'rem';
+            const container = document.getElementById('ui');
+            const canvas = document.getElementById('ecgCanvas');
+            const ctx = canvas.getContext('2d');
             
-            if (Math.random() > 0.8) {
-                wordDiv.style.transform = 'translate(-50%, -50%) rotate(' + (Math.random() * 6 - 3) + 'deg)';
+            let time = 0;
+            let lastBeatTime = 0;
+            let beatIntensity = 0;
+            let ecgData = [];
+            let words = [];
+            let animStartTime = Date.now();
+            let animationId = null;
+            let lastRebuildTime = 0;
+            let frameSkipCounter = 0;
+            
+            // پیش‌محاسبه مقادیر ECG برای کاهش پردازش
+            const ecgCache = new Array(300);
+            let cacheIndex = 0;
+            
+            function getECGValue(timeOffset) {
+                const bpm = 72;
+                const cycleLength = 60 / bpm;
+                const tMod = (timeOffset % cycleLength) / cycleLength;
+                
+                let value = 0;
+                
+                if (tMod > 0.02 && tMod < 0.08) {
+                    const pPos = (tMod - 0.05) / 0.06;
+                    value += 0.13 * Math.sin(pPos * Math.PI);
+                }
+                
+                if (tMod > 0.1 && tMod < 0.23) {
+                    if (tMod > 0.1 && tMod < 0.12) {
+                        const qPos = (tMod - 0.11) / 0.02;
+                        value += -0.28 * Math.sin(qPos * Math.PI);
+                    }
+                    else if (tMod >= 0.12 && tMod < 0.155) {
+                        const rPos = (tMod - 0.1375) / 0.035;
+                        value += 1.1 * Math.sin(rPos * Math.PI);
+                    }
+                    else if (tMod >= 0.155 && tMod < 0.19) {
+                        const sPos = (tMod - 0.1725) / 0.035;
+                        value += -0.45 * Math.sin(sPos * Math.PI);
+                    }
+                    else if (tMod >= 0.19 && tMod < 0.23) {
+                        value += -0.08;
+                    }
+                }
+                
+                if (tMod > 0.4 && tMod < 0.56) {
+                    const tPos = (tMod - 0.48) / 0.08;
+                    value += 0.22 * Math.sin(tPos * Math.PI);
+                }
+                
+                // نویز کمتر در موبایل
+                if (!isMobile) {
+                    value += (Math.random() - 0.5) * 0.012;
+                } else {
+                    value += (Math.random() - 0.5) * 0.008;
+                }
+                
+                return Math.max(-0.55, Math.min(1.15, value));
             }
             
-            wordDiv.textContent = wordText;
+            function resizeCanvas() {
+                const ecgContainer = canvas.parentElement;
+                const width = ecgContainer.clientWidth;
+                const height = ecgContainer.clientHeight;
+                canvas.width = width;
+                canvas.height = height;
+                ecgData = [];
+            }
             
-            const t = (i / numWords) * 2 * Math.PI;
-            const point = getHeartPoint(t);
+            resizeCanvas();
             
-            const xPos = centerX + (point.x * scale / 17);
-            const yPos = centerY + (point.y * scale / 17);
+            // بهینه‌سازی ResizeObserver با throttle
+            const resizeObserver = new ResizeObserver(() => {
+                const now = Date.now();
+                if (now - lastRebuildTime > 100) {
+                    lastRebuildTime = now;
+                    resizeCanvas();
+                    rebuildHeart();
+                }
+            });
+            resizeObserver.observe(container);
             
-            wordDiv.style.left = xPos + 'px';
-            wordDiv.style.top = yPos + 'px';
-            
-            words.push({
-                element: wordDiv,
-                index: i
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    resizeCanvas();
+                    rebuildHeart();
+                }, 150);
             });
             
-            container.appendChild(wordDiv);
-        }
-
-        let startTime = Date.now();
-        
-        function animateWords() {
-            const currentTime = Date.now();
-            const elapsed = (currentTime - startTime) / 1000;
-            const speed = 0.25; // کاهش سرعت برای روانی بیشتر
-            
-            for (let j = 0; j < words.length; j++) {
-                const item = words[j];
-                const baseAngle = (item.index / numWords) * 2 * Math.PI;
-                const newAngle = baseAngle + (elapsed * speed);
-                
-                const point = getHeartPoint(newAngle);
-                
-                const xPos = centerX + (point.x * scale / 17);
-                const yPos = centerY + (point.y * scale / 17);
-                
-                item.element.style.left = xPos + 'px';
-                item.element.style.top = yPos + 'px';
-                
-                const hue = (340 + (item.index * 0.5) + (elapsed * 20)) % 360;
-                const brightness = 70 + Math.sin(elapsed + item.index) * 8;
-                item.element.style.color = `hsl(${hue}, 80%, ${brightness}%)`;
-                item.element.style.textShadow = `0 0 20px hsl(${hue}, 80%, 50%), 0 0 40px hsl(${hue}, 80%, 30%)`;
-                
-                const opacity = 0.8 + Math.sin(elapsed * 0.5 + item.index * 0.3) * 0.15;
-                item.element.style.opacity = opacity;
+            function getECGColor(elapsed, intensity) {
+                const hue = (340 + (elapsed * 15) + (intensity * 40)) % 360;
+                return `hsl(${hue}, 85%, 65%)`;
             }
             
-            requestAnimationFrame(animateWords);
-        }
-
-        animateWords();
-
-        // ------------------ ذرات (کاهش یافته) ------------------
-        function createParticles() {
-            const container = document.body;
-            for (let i = 0; i < 30; i++) { // کاهش از 80 به 30
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                const size = Math.random() * 2 + 1;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.opacity = Math.random() * 0.3;
+            function drawECG(now) {
+                if (!ctx || canvas.width === 0) return;
                 
-                const duration = 15 + Math.random() * 25;
-                const delay = Math.random() * 10;
-                particle.style.animation = `floatParticle ${duration}s ease-in-out ${delay}s infinite alternate`;
+                const width = canvas.width;
+                const height = canvas.height;
+                const centerY = height / 2;
+                const amplitude = height * 0.38;
                 
-                container.appendChild(particle);
+                const newValue = getECGValue(time);
+                const yValue = centerY - (newValue * amplitude);
+                ecgData.push(yValue);
+                
+                if (ecgData.length > width) {
+                    ecgData = ecgData.slice(-width);
+                }
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                if (ecgData.length > 1) {
+                    const elapsed = (now - animStartTime) / 1000;
+                    const waveColor = getECGColor(elapsed, beatIntensity);
+                    
+                    ctx.beginPath();
+                    ctx.strokeStyle = waveColor;
+                    ctx.lineWidth = Math.max(1.2, Math.min(2.5, width / 280));
+                    ctx.shadowBlur = Math.max(4, Math.min(10, width / 80));
+                    ctx.shadowColor = waveColor;
+                    
+                    let startX = 0;
+                    if (ecgData.length < width) {
+                        startX = width - ecgData.length;
+                    }
+                    
+                    // بهینه‌سازی: کاهش نقاط در موبایل
+                    const step = isMobile ? 2 : 1;
+                    for (let i = 0; i < ecgData.length - step; i += step) {
+                        const x1 = startX + i;
+                        const y1 = Math.min(height - 4, Math.max(4, ecgData[i]));
+                        const x2 = startX + i + step;
+                        const y2 = Math.min(height - 4, Math.max(4, ecgData[i + step]));
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                    
+                    ctx.shadowBlur = 0;
+                }
+                
+                if (newValue > 0.88 && (time - lastBeatTime) > 0.28) {
+                    lastBeatTime = time;
+                    beatIntensity = 1;
+                    
+                    const heartGlow = document.querySelector('.heart-glow');
+                    if (heartGlow) {
+                        heartGlow.style.animation = 'none';
+                        heartGlow.offsetHeight;
+                        heartGlow.style.animation = 'pulseGlow 1.15s ease-in-out infinite alternate';
+                    }
+                }
+                
+                beatIntensity *= 0.93;
+                time += isMobile ? 0.033 : 0.016;
             }
-        }
-
-        const styleSheet = document.createElement("style");
-        styleSheet.textContent = `
-            @keyframes floatParticle {
-                0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
-                100% { transform: translate(${Math.random() > 0.5 ? '' : '-'}20px, ${Math.random() > 0.5 ? '' : '-'}20px) scale(1.3); opacity: 0.4; }
-            }
-        `;
-        document.head.appendChild(styleSheet);
-
-        createParticles();
-
-        // ------------------ قلب‌های بارش (کاهش یافته) ------------------
-        function createFallingHearts() {
-            const container = document.body;
-            const heartSymbols = ['♥', '❤', '💖', '💕'];
             
-            for (let i = 0; i < 8; i++) { // کاهش از 15 به 8
-                const heart = document.createElement('div');
-                heart.className = 'falling-heart';
-                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.fontSize = (0.5 + Math.random() * 0.8) + 'rem';
-                heart.style.opacity = 0.1 + Math.random() * 0.1;
-                heart.style.animationDuration = (20 + Math.random() * 25) + 's';
-                heart.style.animationDelay = (Math.random() * 15) + 's';
-                
-                const hue = 330 + Math.random() * 30;
-                heart.style.color = `hsl(${hue}, 80%, 70%)`;
-                
-                container.appendChild(heart);
+            function getHeartPoint(t) {
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                const slimFactor = 0.86;
+                return { x: x * slimFactor, y: y };
             }
-        }
-
-        createFallingHearts();
-
-        // ------------------ گلبرگ‌ها (کاهش یافته) ------------------
-        function createPetals() {
-            const container = document.body;
-            const colors = ['#ff69b4', '#ff1493', '#c71586'];
             
-            for (let i = 0; i < 6; i++) { // کاهش از 12 به 6
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                petal.style.left = Math.random() * 100 + '%';
-                petal.style.background = colors[Math.floor(Math.random() * colors.length)];
-                petal.style.width = (10 + Math.random() * 10) + 'px';
-                petal.style.height = (10 + Math.random() * 10) + 'px';
-                petal.style.animationDuration = (15 + Math.random() * 15) + 's';
-                petal.style.animationDelay = (Math.random() * 10) + 's';
-                petal.style.opacity = 0.1 + Math.random() * 0.1;
+            function rebuildHeart() {
+                words.forEach(item => {
+                    if (item.element && item.element.remove) item.element.remove();
+                });
+                words = [];
                 
-                container.appendChild(petal);
+                const containerWidth = container.clientWidth;
+                const baseSize = 700;
+                const scaleFactor = containerWidth / baseSize;
+                const centerX = containerWidth / 2;
+                const centerY = containerWidth / 2;
+                const heartScale = 220 * scaleFactor;
+                // کاهش تعداد کلمات در موبایل برای بهبود عملکرد
+                let numWords = Math.floor(52 * scaleFactor);
+                if (isMobile) {
+                    numWords = Math.min(40, Math.max(32, numWords));
+                } else {
+                    numWords = Math.max(40, Math.min(56, numWords));
+                }
+                
+                for (let i = 0; i < numWords; i++) {
+                    const wordDiv = document.createElement('div');
+                    wordDiv.className = 'love_word';
+                    wordDiv.textContent = "I love you ";
+                    
+                    const t = (i / numWords) * 2 * Math.PI;
+                    const point = getHeartPoint(t);
+                    
+                    const xPos = centerX + (point.x * heartScale / 16);
+                    const yPos = centerY + (point.y * heartScale / 16);
+                    
+                    wordDiv.style.left = xPos + 'px';
+                    wordDiv.style.top = yPos + 'px';
+                    wordDiv.style.transform = 'translate(-50%, -50%)';
+                    wordDiv.style.opacity = '0.92';
+                    
+                    words.push({
+                        element: wordDiv,
+                        index: i,
+                        angle: t
+                    });
+                    
+                    container.appendChild(wordDiv);
+                }
             }
-        }
-
-        createPetals();
-
-        // ------------------ اسپارکل‌ها (کاهش یافته) ------------------
-        function createSparkles() {
-            const container = document.body;
-            const symbols = ['✦', '✧', '♥', '✶'];
             
-            for (let i = 0; i < 10; i++) { // کاهش از 20 به 10
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            function animateLoveWords(now) {
+                if (words.length === 0) return;
                 
-                const angle = Math.random() * 2 * Math.PI;
-                const radius = 150 + Math.random() * 150;
-                const x = 50 + (Math.cos(angle) * radius / 5);
-                const y = 50 + (Math.sin(angle) * radius / 5);
+                const elapsed = (now - animStartTime) / 1000;
+                const speed = 0.2;
+                const containerWidth = container.clientWidth;
+                const baseSize = 700;
+                const scaleFactor = containerWidth / baseSize;
+                const centerX = containerWidth / 2;
+                const centerY = containerWidth / 2;
+                const heartScale = 220 * scaleFactor;
                 
-                sparkle.style.left = x + '%';
-                sparkle.style.top = y + '%';
-                sparkle.style.animationDelay = (Math.random() * 5) + 's';
-                sparkle.style.animationDuration = (3 + Math.random() * 3) + 's';
-                sparkle.style.fontSize = (0.5 + Math.random() * 0.5) + 'rem';
-                
-                const hue = 300 + Math.random() * 60;
-                sparkle.style.color = `hsl(${hue}, 80%, 70%)`;
-                sparkle.style.textShadow = `0 0 15px hsl(${hue}, 80%, 50%)`;
-                
-                container.appendChild(sparkle);
+                for (let j = 0; j < words.length; j++) {
+                    const item = words[j];
+                    const newAngle = item.angle + (elapsed * speed);
+                    const point = getHeartPoint(newAngle);
+                    
+                    const xPos = centerX + (point.x * heartScale / 16);
+                    const yPos = centerY + (point.y * heartScale / 16);
+                    
+                    item.element.style.left = xPos + 'px';
+                    item.element.style.top = yPos + 'px';
+                    
+                    const hue = (340 + (item.index * 0.8) + (elapsed * 15) + (beatIntensity * 50)) % 360;
+                    item.element.style.color = `hsl(${hue}, 85%, 68%)`;
+                    item.element.style.textShadow = `0 0 ${6 + beatIntensity * 12}px hsl(${hue}, 85%, 60%)`;
+                }
             }
-        }
-
-        createSparkles();
+            
+            // انیمیشن با قابلیت تنظیم فریم‌ریت
+            function animate(timestamp) {
+                if (!lastFrameTime) {
+                    lastFrameTime = timestamp;
+                    requestAnimationFrame(animate);
+                    return;
+                }
+                
+                const elapsed = timestamp - lastFrameTime;
+                
+                if (elapsed >= frameInterval) {
+                    lastFrameTime = timestamp - (elapsed % frameInterval);
+                    
+                    const now = Date.now();
+                    drawECG(now);
+                    animateLoveWords(now);
+                }
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            // ================== بارش پارتیکل‌ها (کاهش تعداد در موبایل) ==================
+            function createFallingParticles() {
+                const particleCount = isMobile ? 20 : 35;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'falling-particle';
+                    const size = Math.random() * 2.5 + 1;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    particle.style.background = `rgba(234, 128, 176, ${0.3 + Math.random() * 0.4})`;
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.boxShadow = `0 0 ${size * 1.5}px rgba(234, 128, 176, 0.5)`;
+                    
+                    const duration = 5 + Math.random() * 10;
+                    const delay = Math.random() * 15;
+                    particle.style.animation = `fallParticle ${duration}s linear ${delay}s infinite`;
+                    
+                    document.body.appendChild(particle);
+                }
+            }
+            
+            function createFallingHearts() {
+                const heartSymbols = ['♥', '❤', '💖', '💗'];
+                const heartCount = isMobile ? 8 : 15;
+                
+                for (let i = 0; i < heartCount; i++) {
+                    const heart = document.createElement('div');
+                    heart.className = 'falling-heart';
+                    heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.fontSize = (0.7 + Math.random() * 0.6) + 'rem';
+                    
+                    const hue = 330 + Math.random() * 30;
+                    heart.style.color = `hsl(${hue}, 85%, 70%)`;
+                    heart.style.textShadow = `0 0 8px hsl(${hue}, 85%, 60%)`;
+                    
+                    const duration = 6 + Math.random() * 12;
+                    const delay = Math.random() * 12;
+                    const sway = 20 + Math.random() * 30;
+                    
+                    heart.style.animation = `fallHeart ${duration}s linear ${delay}s infinite`;
+                    heart.style.setProperty('--sway', sway + 'px');
+                    
+                    document.body.appendChild(heart);
+                }
+            }
+            
+            function createFallingSparkles() {
+                const symbols = ['✦', '✧', '⭐', '💕'];
+                const sparkleCount = isMobile ? 12 : 20;
+                
+                for (let i = 0; i < sparkleCount; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    sparkle.style.position = 'fixed';
+                    sparkle.style.left = Math.random() * 100 + '%';
+                    sparkle.style.top = '-20px';
+                    sparkle.style.animation = `fallSparkle ${4 + Math.random() * 7}s linear ${Math.random() * 12}s infinite`;
+                    sparkle.style.fontSize = (0.5 + Math.random() * 0.5) + 'rem';
+                    
+                    const hue = 300 + Math.random() * 60;
+                    sparkle.style.color = `hsl(${hue}, 85%, 70%)`;
+                    
+                    document.body.appendChild(sparkle);
+                }
+            }
+            
+            const fallingStyles = document.createElement("style");
+            fallingStyles.textContent = `
+                @keyframes fallParticle {
+                    0% { transform: translateY(-10vh) translateX(0) scale(0.8); opacity: 0; }
+                    15% { opacity: 0.6; }
+                    85% { opacity: 0.4; }
+                    100% { transform: translateY(110vh) translateX(${Math.random() * 40 - 20}px) scale(1.1); opacity: 0; }
+                }
+                
+                @keyframes fallHeart {
+                    0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0; }
+                    15% { opacity: 0.6; }
+                    50% { transform: translateY(50vh) rotate(180deg) translateX(calc(var(--sway, 30px) * 0.5)); }
+                    85% { opacity: 0.4; }
+                    100% { transform: translateY(110vh) rotate(360deg) translateX(var(--sway, 30px)); opacity: 0; }
+                }
+                
+                @keyframes fallSparkle {
+                    0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 0; }
+                    20% { opacity: 0.7; transform: translateY(25vh) rotate(120deg) scale(1); }
+                    80% { opacity: 0.4; }
+                    100% { transform: translateY(110vh) rotate(360deg) scale(0.6); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(fallingStyles);
+            
+            // راه‌اندازی
+            rebuildHeart();
+            createFallingParticles();
+            createFallingHearts();
+            createFallingSparkles();
+            
+            // شروع انیمیشن
+            animationId = requestAnimationFrame(animate);
+            
+            // Cleanup در صورت نیاز
+            window.addEventListener('beforeunload', () => {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            });
+            
+            console.log('✨ Optimized for mobile - smooth performance! ✨');
+        })();
     </script>
 </body>
 </html>
