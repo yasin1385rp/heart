@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>💖 Love Heart 💖</title>
+    <title>💖 Love Heart - Beautiful Love Animation 💖</title>
     <style>
         * {
             margin: 0;
@@ -34,7 +34,6 @@
             justify-content: center;
             align-items: center;
             z-index: 2;
-            will-change: transform;
         }
 
         .love_word {
@@ -46,9 +45,8 @@
             transform: translate(-50%, -50%);
             opacity: 0.95;
             pointer-events: none;
-            font-size: clamp(0.7rem, 4vw, 1.1rem);
+            font-size: clamp(0.7rem, 3.5vw, 1rem);
             z-index: 5;
-            will-change: left, top, color;
         }
 
         .heart-glow {
@@ -56,34 +54,15 @@
             width: 70%;
             height: 70%;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(234, 128, 176, 0.2) 0%, rgba(234, 128, 176, 0.08) 50%, transparent 70%);
+            background: radial-gradient(circle, rgba(234, 128, 176, 0.25) 0%, rgba(234, 128, 176, 0.1) 50%, transparent 70%);
             filter: blur(50px);
             z-index: -1;
             animation: pulseGlow 1.15s ease-in-out infinite alternate;
-            will-change: transform;
         }
 
         @keyframes pulseGlow {
-            0% { transform: scale(1); opacity: 0.4; }
-            100% { transform: scale(1.25); opacity: 0.9; }
-        }
-
-        .ecg-wave-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70%;
-            height: 30%;
-            z-index: 15;
-            pointer-events: none;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            filter: drop-shadow(0 0 15px rgba(234, 128, 176, 0.6));
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.3); opacity: 1; }
         }
 
         .title-text {
@@ -130,7 +109,7 @@
             max-width: 500px;
             height: 70%;
             max-height: 500px;
-            background: radial-gradient(ellipse at center, rgba(234, 128, 176, 0.06) 0%, transparent 70%);
+            background: radial-gradient(ellipse at center, rgba(234, 128, 176, 0.08) 0%, transparent 70%);
             filter: blur(20px);
             pointer-events: none;
             z-index: -2;
@@ -148,7 +127,7 @@
             left: 0;
             width: 100%;
             height: 80px;
-            background: linear-gradient(to top, rgba(234, 128, 176, 0.03) 0%, transparent 100%);
+            background: linear-gradient(to top, rgba(234, 128, 176, 0.04) 0%, transparent 100%);
             filter: blur(15px);
             z-index: 1;
             pointer-events: none;
@@ -157,13 +136,12 @@
 
         @keyframes mistWave {
             0% { opacity: 0.2; transform: translateY(0); }
-            100% { opacity: 0.5; transform: translateY(-5px); }
+            100% { opacity: 0.6; transform: translateY(-5px); }
         }
 
         .falling-particle, .falling-heart, .sparkle {
             position: fixed;
             pointer-events: none;
-            will-change: transform;
             z-index: 1;
         }
         
@@ -179,19 +157,24 @@
         .sparkle {
             top: -20px;
             font-size: 0.5rem;
+            animation: sparkleAnim 3s ease-in-out infinite;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 0.8; transform: scale(1) rotate(180deg); }
         }
 
         @media (max-width: 768px) {
             .love_word { letter-spacing: 1px; }
             .romantic-text { top: 15px; letter-spacing: 2px; }
             .title-text { bottom: 15px; letter-spacing: 4px; }
-            .ecg-wave-container { width: 75%; height: 28%; }
         }
 
         @media (max-width: 480px) {
-            .love_word { letter-spacing: 0.5px; }
-            .romantic-text { font-size: 0.8rem; white-space: nowrap; padding: 0 10px; }
-            .title-text { font-size: 0.5rem; letter-spacing: 3px; }
+            .love_word { letter-spacing: 0.5px; font-size: clamp(0.6rem, 3vw, 0.8rem); }
+            .romantic-text { font-size: 0.75rem; white-space: nowrap; padding: 0 10px; }
+            .title-text { font-size: 0.45rem; letter-spacing: 3px; }
         }
 
         @media (min-width: 1200px) {
@@ -208,9 +191,6 @@
 
     <div id="ui">
         <div class="heart-glow"></div>
-        <div class="ecg-wave-container">
-            <canvas id="ecgCanvas" width="600" height="200" style="width:100%; height:100%"></canvas>
-        </div>
     </div>
     
     <div class="title-text">💕 For You 💕</div>
@@ -220,193 +200,24 @@
             // تشخیص موبایل
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            // تنظیمات بهینه برای موبایل
-            const targetFPS = isMobile ? 30 : 60;
-            const frameInterval = 1000 / targetFPS;
-            let lastFrameTime = 0;
-            
             const container = document.getElementById('ui');
-            const canvas = document.getElementById('ecgCanvas');
-            const ctx = canvas.getContext('2d');
             
-            // متغیرهای ECG
-            let time = 0;
-            let lastBeatTime = 0;
             let beatIntensity = 0;
-            let ecgData = [];
             let words = [];
             let animStartTime = Date.now();
-            let animationId = null;
-            let lastRebuildTime = 0;
+            let loveWordsAnimationId = null;
             
-            // بافر داینامیک برای ECG - حل مشکل تشنج
-            let maxDataPoints = 300;
-            let frameCounter = 0;
-            let lastWidth = 0;
+            // ضربان قلب مصنوعی برای هاله
+            let lastBeatTime = 0;
+            let time = 0;
             
-            // پیش‌محاسبه سینوس‌ها برای بهبود عملکرد
-            const sinCache = {};
-            function fastSin(angle) {
-                const key = angle.toFixed(4);
-                if (!sinCache[key]) {
-                    sinCache[key] = Math.sin(angle);
-                }
-                return sinCache[key];
-            }
-            
-            function getECGValue(timeOffset) {
-                const bpm = 72;
-                const cycleLength = 60 / bpm;
-                const tMod = (timeOffset % cycleLength) / cycleLength;
+            // شبیه‌سازی ضربان قلب برای هاله
+            function simulateHeartbeat() {
+                time += 0.016;
+                const beatFrequency = 1.2; // ضربان در ثانیه
+                const beatValue = Math.sin(time * Math.PI * 2 * beatFrequency);
                 
-                let value = 0;
-                
-                // موج P
-                if (tMod > 0.02 && tMod < 0.08) {
-                    const pPos = (tMod - 0.05) / 0.06;
-                    value += 0.13 * fastSin(pPos * Math.PI);
-                }
-                
-                // کمپلکس QRS
-                if (tMod > 0.1 && tMod < 0.23) {
-                    if (tMod > 0.1 && tMod < 0.12) {
-                        const qPos = (tMod - 0.11) / 0.02;
-                        value += -0.28 * fastSin(qPos * Math.PI);
-                    }
-                    else if (tMod >= 0.12 && tMod < 0.155) {
-                        const rPos = (tMod - 0.1375) / 0.035;
-                        value += 1.1 * fastSin(rPos * Math.PI);
-                    }
-                    else if (tMod >= 0.155 && tMod < 0.19) {
-                        const sPos = (tMod - 0.1725) / 0.035;
-                        value += -0.45 * fastSin(sPos * Math.PI);
-                    }
-                    else if (tMod >= 0.19 && tMod < 0.23) {
-                        value += -0.08;
-                    }
-                }
-                
-                // موج T
-                if (tMod > 0.4 && tMod < 0.56) {
-                    const tPos = (tMod - 0.48) / 0.08;
-                    value += 0.22 * fastSin(tPos * Math.PI);
-                }
-                
-                return Math.max(-0.55, Math.min(1.15, value));
-            }
-            
-            function resizeCanvas() {
-                const ecgContainer = canvas.parentElement;
-                const width = ecgContainer.clientWidth;
-                const height = ecgContainer.clientHeight;
-                
-                if (width > 0 && height > 0) {
-                    canvas.width = width;
-                    canvas.height = height;
-                    lastWidth = width;
-                    // محدود کردن بافر بر اساس عرض
-                    maxDataPoints = isMobile ? Math.min(width, 200) : Math.min(width, 400);
-                    // ریست کردن دیتا با حفظ آخرین مقدار
-                    if (ecgData.length > 0) {
-                        const lastValue = ecgData[ecgData.length - 1];
-                        ecgData = [lastValue];
-                    } else {
-                        ecgData = [];
-                    }
-                }
-            }
-            
-            resizeCanvas();
-            
-            // Resize Observer با throttle
-            const resizeObserver = new ResizeObserver(() => {
-                const now = Date.now();
-                if (now - lastRebuildTime > 150) {
-                    lastRebuildTime = now;
-                    resizeCanvas();
-                    rebuildHeart();
-                }
-            });
-            resizeObserver.observe(container);
-            
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    resizeCanvas();
-                    rebuildHeart();
-                }, 200);
-            });
-            
-            function getECGColor(elapsed, intensity) {
-                const hue = (340 + (elapsed * 15) + (intensity * 40)) % 360;
-                return `hsl(${hue}, 85%, 65%)`;
-            }
-            
-            function drawECG(now) {
-                if (!ctx || canvas.width === 0 || canvas.height === 0) return;
-                
-                const width = canvas.width;
-                const height = canvas.height;
-                const centerY = height / 2;
-                const amplitude = height * 0.35;
-                
-                // اضافه کردن نقطه جدید با نرخ کنترل شده
-                const newValue = getECGValue(time);
-                const yValue = centerY - (newValue * amplitude);
-                ecgData.push(yValue);
-                
-                // محدود کردن سایز بافر - جلوگیری از انباشتگی
-                if (ecgData.length > maxDataPoints) {
-                    // حذف 20% اول بافر به جای کل برای روان‌تر شدن
-                    const removeCount = Math.floor(maxDataPoints * 0.2);
-                    ecgData = ecgData.slice(removeCount);
-                }
-                
-                ctx.clearRect(0, 0, width, height);
-                
-                // رسم ECG با خطوط نرم
-                if (ecgData.length > 1) {
-                    const elapsed = (now - animStartTime) / 1000;
-                    const waveColor = getECGColor(elapsed, beatIntensity);
-                    
-                    ctx.beginPath();
-                    ctx.strokeStyle = waveColor;
-                    ctx.lineWidth = Math.max(1.5, Math.min(2.5, width / 300));
-                    ctx.shadowBlur = Math.max(3, Math.min(8, width / 100));
-                    ctx.shadowColor = waveColor;
-                    
-                    // محاسبه موقعیت شروع
-                    let startX = 0;
-                    if (ecgData.length < width) {
-                        startX = width - ecgData.length;
-                    }
-                    
-                    // استفاده از دراپ فریم در موبایل برای کاهش لگ
-                    const step = isMobile ? 2 : 1;
-                    
-                    // رسم با خطوط مستقیم (بهتر از path جداگانه برای هر نقطه)
-                    ctx.beginPath();
-                    let firstPoint = true;
-                    
-                    for (let i = 0; i < ecgData.length - step; i += step) {
-                        const x = startX + i;
-                        const y = Math.min(height - 5, Math.max(5, ecgData[i]));
-                        
-                        if (firstPoint) {
-                            ctx.moveTo(x, y);
-                            firstPoint = false;
-                        } else {
-                            ctx.lineTo(x, y);
-                        }
-                    }
-                    ctx.stroke();
-                    
-                    ctx.shadowBlur = 0;
-                }
-                
-                // تشخیص ضربان و ایجاد افکت
-                if (newValue > 0.88 && (time - lastBeatTime) > 0.28) {
+                if (beatValue > 0.95 && (time - lastBeatTime) > 0.4) {
                     lastBeatTime = time;
                     beatIntensity = 1;
                     
@@ -419,7 +230,7 @@
                 }
                 
                 beatIntensity *= 0.94;
-                time += isMobile ? 0.033 : 0.016;
+                requestAnimationFrame(simulateHeartbeat);
             }
             
             function getHeartPoint(t) {
@@ -430,7 +241,6 @@
             }
             
             function rebuildHeart() {
-                // حذف المان‌های قدیمی
                 words.forEach(item => {
                     if (item.element && item.element.remove) item.element.remove();
                 });
@@ -443,16 +253,13 @@
                 const centerY = containerWidth / 2;
                 const heartScale = 220 * scaleFactor;
                 
-                // تعداد کلمات مناسب برای موبایل
                 let numWords;
                 if (isMobile) {
-                    numWords = containerWidth < 400 ? 32 : 38;
+                    numWords = containerWidth < 400 ? 30 : 36;
                 } else {
-                    numWords = Math.floor(52 * scaleFactor);
-                    numWords = Math.max(42, Math.min(56, numWords));
+                    numWords = Math.min(52, Math.max(42, Math.floor(48 * scaleFactor)));
                 }
                 
-                // ایجاد کلمات با استفاده از DocumentFragment برای عملکرد بهتر
                 const fragment = document.createDocumentFragment();
                 
                 for (let i = 0; i < numWords; i++) {
@@ -495,12 +302,6 @@
                 const centerY = containerWidth / 2;
                 const heartScale = 220 * scaleFactor;
                 
-                // بهینه‌سازی: فقط هر چند فریم یکبار در موبایل آپدیت کن
-                if (isMobile) {
-                    frameCounter++;
-                    if (frameCounter % 2 !== 0) return;
-                }
-                
                 for (let j = 0; j < words.length; j++) {
                     const item = words[j];
                     const newAngle = item.angle + (elapsed * speed);
@@ -512,50 +313,29 @@
                     item.element.style.left = xPos + 'px';
                     item.element.style.top = yPos + 'px';
                     
-                    const hue = (340 + (item.index * 0.8) + (elapsed * 12) + (beatIntensity * 40)) % 360;
+                    const hue = (340 + (item.index * 0.7) + (elapsed * 12) + (beatIntensity * 35)) % 360;
                     item.element.style.color = `hsl(${hue}, 85%, 68%)`;
-                    item.element.style.textShadow = `0 0 ${5 + beatIntensity * 10}px hsl(${hue}, 85%, 60%)`;
-                }
-            }
-            
-            // انیمیشن اصلی با کنترل فریم ریت
-            function animate(timestamp) {
-                if (!lastFrameTime) {
-                    lastFrameTime = timestamp;
-                    animationId = requestAnimationFrame(animate);
-                    return;
+                    item.element.style.textShadow = `0 0 ${5 + beatIntensity * 12}px hsl(${hue}, 85%, 60%)`;
                 }
                 
-                const elapsed = timestamp - lastFrameTime;
-                
-                if (elapsed >= frameInterval) {
-                    // جبران زمان از دست رفته
-                    const framesToCatch = Math.min(Math.floor(elapsed / frameInterval), 2);
-                    lastFrameTime = timestamp - (elapsed % frameInterval);
-                    
-                    const now = Date.now();
-                    drawECG(now);
-                    animateLoveWords(now);
-                }
-                
-                animationId = requestAnimationFrame(animate);
+                loveWordsAnimationId = requestAnimationFrame(animateLoveWords);
             }
             
             // ================== بارش پارتیکل‌ها ==================
             function createFallingParticles() {
-                const particleCount = isMobile ? 15 : 30;
+                const particleCount = isMobile ? 18 : 35;
                 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'falling-particle';
-                    const size = Math.random() * 2 + 1;
+                    const size = Math.random() * 2.5 + 0.8;
                     particle.style.width = size + 'px';
                     particle.style.height = size + 'px';
-                    particle.style.background = `rgba(234, 128, 176, ${0.2 + Math.random() * 0.4})`;
+                    particle.style.background = `rgba(234, 128, 176, ${0.2 + Math.random() * 0.5})`;
                     particle.style.left = Math.random() * 100 + '%';
-                    particle.style.boxShadow = `0 0 ${size}px rgba(234, 128, 176, 0.4)`;
+                    particle.style.boxShadow = `0 0 ${size}px rgba(234, 128, 176, 0.5)`;
                     
-                    const duration = 6 + Math.random() * 12;
+                    const duration = 5 + Math.random() * 12;
                     const delay = Math.random() * 15;
                     particle.style.animation = `fallParticle ${duration}s linear ${delay}s infinite`;
                     
@@ -564,23 +344,23 @@
             }
             
             function createFallingHearts() {
-                const heartSymbols = ['♥', '❤', '💖', '💗'];
-                const heartCount = isMobile ? 6 : 12;
+                const heartSymbols = ['♥', '❤', '💖', '💗', '💓'];
+                const heartCount = isMobile ? 8 : 15;
                 
                 for (let i = 0; i < heartCount; i++) {
                     const heart = document.createElement('div');
                     heart.className = 'falling-heart';
                     heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
                     heart.style.left = Math.random() * 100 + '%';
-                    heart.style.fontSize = (0.6 + Math.random() * 0.6) + 'rem';
+                    heart.style.fontSize = (0.7 + Math.random() * 0.6) + 'rem';
                     
                     const hue = 330 + Math.random() * 30;
                     heart.style.color = `hsl(${hue}, 85%, 70%)`;
-                    heart.style.textShadow = `0 0 6px hsl(${hue}, 85%, 60%)`;
+                    heart.style.textShadow = `0 0 8px hsl(${hue}, 85%, 60%)`;
                     
-                    const duration = 7 + Math.random() * 14;
+                    const duration = 6 + Math.random() * 14;
                     const delay = Math.random() * 12;
-                    const sway = 15 + Math.random() * 25;
+                    const sway = 15 + Math.random() * 30;
                     
                     heart.style.animation = `fallHeart ${duration}s linear ${delay}s infinite`;
                     heart.style.setProperty('--sway', sway + 'px');
@@ -590,8 +370,8 @@
             }
             
             function createFallingSparkles() {
-                const symbols = ['✦', '✧', '⭐', '💕'];
-                const sparkleCount = isMobile ? 8 : 15;
+                const symbols = ['✦', '✧', '⭐', '💕', '⚘'];
+                const sparkleCount = isMobile ? 10 : 20;
                 
                 for (let i = 0; i < sparkleCount; i++) {
                     const sparkle = document.createElement('div');
@@ -600,8 +380,8 @@
                     sparkle.style.position = 'fixed';
                     sparkle.style.left = Math.random() * 100 + '%';
                     sparkle.style.top = '-20px';
-                    sparkle.style.animation = `fallSparkle ${5 + Math.random() * 8}s linear ${Math.random() * 12}s infinite`;
-                    sparkle.style.fontSize = (0.4 + Math.random() * 0.5) + 'rem';
+                    sparkle.style.animation = `fallSparkle ${4 + Math.random() * 8}s linear ${Math.random() * 12}s infinite`;
+                    sparkle.style.fontSize = (0.5 + Math.random() * 0.5) + 'rem';
                     
                     const hue = 300 + Math.random() * 60;
                     sparkle.style.color = `hsl(${hue}, 85%, 70%)`;
@@ -613,24 +393,24 @@
             const fallingStyles = document.createElement("style");
             fallingStyles.textContent = `
                 @keyframes fallParticle {
-                    0% { transform: translateY(-10vh) translateX(0) scale(0.6); opacity: 0; }
-                    20% { opacity: 0.5; }
-                    80% { opacity: 0.3; }
-                    100% { transform: translateY(110vh) translateX(${Math.random() * 30 - 15}px) scale(1); opacity: 0; }
+                    0% { transform: translateY(-10vh) translateX(0) scale(0.5); opacity: 0; }
+                    20% { opacity: 0.6; }
+                    80% { opacity: 0.4; }
+                    100% { transform: translateY(110vh) translateX(${Math.random() * 40 - 20}px) scale(1.1); opacity: 0; }
                 }
                 
                 @keyframes fallHeart {
                     0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 0; }
-                    20% { opacity: 0.6; }
+                    20% { opacity: 0.7; }
                     50% { transform: translateY(50vh) rotate(180deg) translateX(calc(var(--sway, 20px) * 0.5)); }
-                    80% { opacity: 0.4; }
+                    80% { opacity: 0.5; }
                     100% { transform: translateY(110vh) rotate(360deg) translateX(var(--sway, 20px)); opacity: 0; }
                 }
                 
                 @keyframes fallSparkle {
-                    0% { transform: translateY(-10vh) rotate(0deg) scale(0.5); opacity: 0; }
-                    25% { opacity: 0.6; transform: translateY(30vh) rotate(120deg) scale(0.9); }
-                    75% { opacity: 0.3; }
+                    0% { transform: translateY(-10vh) rotate(0deg) scale(0.4); opacity: 0; }
+                    25% { opacity: 0.7; transform: translateY(30vh) rotate(120deg) scale(0.9); }
+                    75% { opacity: 0.4; }
                     100% { transform: translateY(110vh) rotate(360deg) scale(0.5); opacity: 0; }
                 }
             `;
@@ -642,17 +422,25 @@
             createFallingHearts();
             createFallingSparkles();
             
-            // شروع انیمیشن
-            animationId = requestAnimationFrame(animate);
+            // شروع انیمیشن‌ها
+            loveWordsAnimationId = requestAnimationFrame(animateLoveWords);
+            simulateHeartbeat();
+            
+            // رویداد resize
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    rebuildHeart();
+                }, 150);
+            });
             
             // Cleanup
             window.addEventListener('beforeunload', () => {
-                if (animationId) {
-                    cancelAnimationFrame(animationId);
-                }
+                if (loveWordsAnimationId) cancelAnimationFrame(loveWordsAnimationId);
             });
             
-            console.log('✨ ECG seizure fixed - smooth on mobile! ✨');
+            console.log('✨ Beautiful Love Heart - ECG removed, all other effects preserved! ✨');
         })();
     </script>
 </body>
